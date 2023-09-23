@@ -2,13 +2,11 @@ import base64
 import os
 import secrets
 import time
-from datetime import datetime, timedelta
 from hashlib import md5
 from typing import List, Optional
 
 from authlib.jose import jwt
 from passlib.apps import custom_app_context as pwd_context
-from sqlalchemy import Index
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import Field, Relationship, SQLModel, select
 
