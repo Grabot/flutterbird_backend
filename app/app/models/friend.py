@@ -10,6 +10,7 @@ class Friend(SQLModel, table=True):
     We assume that they made this connection because they want
     to be friendly with each other, so we classify it as 'Friend'
     """
+
     __tablename__ = "Friend"
     id: Optional[int] = Field(default=None, primary_key=True)
 

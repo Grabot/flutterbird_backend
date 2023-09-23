@@ -8,6 +8,7 @@ class UserToken(SQLModel, table=True):
     """
     UserToken
     """
+
     __tablename__ = "UserToken"
     id: Optional[int] = Field(default=None, primary_key=True)
     user_id: int = Field(foreign_key="User.id")

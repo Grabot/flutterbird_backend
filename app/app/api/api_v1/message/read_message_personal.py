@@ -4,9 +4,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
 from app.api.api_v1 import api_router_v1
-from app.util.rest_util import get_failed_response
 from app.database import get_db
 from app.models import Friend, User
+from app.util.rest_util import get_failed_response
 from app.util.util import check_token, get_auth_token
 
 

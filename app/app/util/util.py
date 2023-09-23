@@ -33,9 +33,7 @@ async def refresh_user_token(db: AsyncSession, access_token, refresh_token):
         return await delete_user_token_and_return(db, user_token, None)
 
     user_statement = (
-        select(User)
-        .filter_by(id=user_token.user_id)
-        .options(selectinload(User.friends))
+        select(User).filter_by(id=user_token.user_id).options(selectinload(User.friends))
     )
     user_results = await db.execute(user_statement)
     user_result = user_results.first()
@@ -77,9 +75,7 @@ async def check_token(db: AsyncSession, token, retrieve_full=False) -> Optional[
         return None
     if retrieve_full:
         user_statement = (
-            select(User)
-            .filter_by(id=user_token.user_id)
-            .options(selectinload(User.friends))
+            select(User).filter_by(id=user_token.user_id).options(selectinload(User.friends))
         )
     else:
         user_statement = select(User).filter_by(id=user_token.user_id)

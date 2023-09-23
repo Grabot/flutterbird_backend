@@ -6,12 +6,12 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.api_v1 import api_router_v1
-from app.util.rest_util import get_failed_response
 from app.celery_worker.tasks import task_send_email
 from app.config.config import settings
 from app.database import get_db
 from app.models import User, UserToken
 from app.util.email.verification_email import verification_email
+from app.util.rest_util import get_failed_response
 from app.util.util import check_token, get_auth_token, refresh_user_token
 
 

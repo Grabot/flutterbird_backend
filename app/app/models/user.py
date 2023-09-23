@@ -20,6 +20,7 @@ class User(SQLModel, table=True):
     """
     User
     """
+
     __tablename__ = "User"
     id: Optional[int] = Field(default=None, primary_key=True)
     username: str = Field(default=None, index=True, unique=True)

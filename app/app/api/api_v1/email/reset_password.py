@@ -7,12 +7,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
 from app.api.api_v1 import api_router_v1
-from app.util.rest_util import get_failed_response
 from app.celery_worker.tasks import task_send_email
 from app.config.config import settings
 from app.database import get_db
 from app.models import User, UserToken
 from app.util.email.reset_password_email import reset_password_email
+from app.util.rest_util import get_failed_response
 
 
 class PasswordResetRequest(BaseModel):
