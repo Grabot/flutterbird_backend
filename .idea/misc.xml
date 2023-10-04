@@ -3,7 +3,10 @@
   <component name="Black">
     <option name="executionMode" value="BINARY" />
     <option name="pathToExecutable" value="$USER_HOME$/.local/bin/black" />
-    <option name="sdkUUID" value="27e1d2da-8d0d-450f-a88b-d1e3a017e1ed" />
+    <option name="sdkName" value="Python 3.10 (flutterbird_backend)" />
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.10 (flutterbird_backend)" project-jdk-type="Python SDK" />
+  <component name="PyCharmProfessionalAdvertiser">
+    <option name="shown" value="true" />
+  </component>
 </project>

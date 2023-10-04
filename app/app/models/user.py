@@ -29,6 +29,10 @@ class User(SQLModel, table=True):
     origin: int
     email_verified: bool = Field(default=False)
     default_avatar: bool = Field(default=True)
+    best_score: int = Field(default=0)
+    total_flutters: int = Field(default=0)
+    total_pipes_cleared: int = Field(default=0)
+    total_games: int = Field(default=0)
 
     tokens: List["UserToken"] = Relationship(back_populates="user")
 
@@ -152,6 +156,12 @@ class User(SQLModel, table=True):
             "verified": self.email_verified,
             "friends": self.get_friend_ids(),
             "avatar": self.get_user_avatar(True),
+            "score": {
+                "total_flutters": self.total_flutters,
+                "total_pipes_cleared": self.total_pipes_cleared,
+                "total_games": self.total_games,
+                "best_score": self.best_score,
+            },
         }
 
     @property
@@ -161,6 +171,12 @@ class User(SQLModel, table=True):
             "id": self.id,
             "username": self.username,
             "avatar": self.get_user_avatar(True),
+            "score": {
+                "total_flutters": self.total_flutters,
+                "total_pipes_cleared": self.total_pipes_cleared,
+                "total_games": self.total_games,
+                "best_score": self.best_score,
+            },
         }
 
     @property
@@ -174,7 +190,14 @@ class User(SQLModel, table=True):
 
     @property
     def serialize_no_detail(self):
+        # used after account creation before there is an avatar and when all the scores are 0
         return {
             "id": self.id,
             "username": self.username,
+            "score": {
+                "total_flutters": 0,
+                "total_pipes_cleared": 0,
+                "total_games": 0,
+                "best_score": 0,
+            },
         }

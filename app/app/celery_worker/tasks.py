@@ -34,3 +34,9 @@ def task_send_email(username: str, recipients: str, subject: str, body: str):
     )
 
     return {"success": True}
+
+
+@celery_app.task
+def task_activate_celery():
+    print("test")
+    return {"success": True}

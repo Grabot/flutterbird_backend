@@ -5,6 +5,7 @@ from pydantic import BaseSettings
 
 class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1.0"
+    API_LOGIN_STR: str = "/login"
 
     POSTGRES_URL = os.environ["POSTGRES_URL"]
     POSTGRES_PORT = os.environ["POSTGRES_PORT"]
@@ -41,18 +42,18 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", None)
     GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
 
-    GITHUB_AUTHORIZE = "https://github.com/login/oauth/authorize"
-    GITHUB_ACCESS = "https://github.com/login/oauth/access_token"
-    GITHUB_USER = "https://api.github.com/user"
-    GITHUB_CLIENT_ID = os.environ.get("GITHUB_CLIENT_ID", None)
-    GITHUB_CLIENT_SECRET = os.environ.get("GITHUB_CLIENT_SECRET", None)
-
-    REDDIT_AUTHORIZE = "https://www.reddit.com/api/v1/authorize"
-    REDDIT_ACCESS = "https://www.reddit.com/api/v1/access_token"
-    REDDIT_USER = "https://oauth.reddit.com/api/v1/me"
-    REDDIT_CLIENT_ID = os.environ.get("REDDIT_CLIENT_ID", None)
-    REDDIT_CLIENT_SECRET = os.environ.get("REDDIT_CLIENT_SECRET", None)
-    REDDIT_REDIRECT = "https://flutterbird.eu/login/reddit/callback"
+    # GITHUB_AUTHORIZE = "https://github.com/login/oauth/authorize"
+    # GITHUB_ACCESS = "https://github.com/login/oauth/access_token"
+    # GITHUB_USER = "https://api.github.com/user"
+    # GITHUB_CLIENT_ID = os.environ.get("GITHUB_CLIENT_ID", None)
+    # GITHUB_CLIENT_SECRET = os.environ.get("GITHUB_CLIENT_SECRET", None)
+    #
+    # REDDIT_AUTHORIZE = "https://www.reddit.com/api/v1/authorize"
+    # REDDIT_ACCESS = "https://www.reddit.com/api/v1/access_token"
+    # REDDIT_USER = "https://oauth.reddit.com/api/v1/me"
+    # REDDIT_CLIENT_ID = os.environ.get("REDDIT_CLIENT_ID", None)
+    # REDDIT_CLIENT_SECRET = os.environ.get("REDDIT_CLIENT_SECRET", None)
+    # REDDIT_REDIRECT = "https://flutterbird.eu/login/reddit/callback"
     DEBUG = True
 
     jwk = {
