@@ -28,18 +28,17 @@ def get_google_provider_cfg():
 async def login_google(
     request: Request,
 ):
-    # Find out what URL to hit for Google api_login
+    # Find out what URL to hit for Google login
     print("loging google")
     google_provider_cfg = get_google_provider_cfg()
     print(f"base url {google_provider_cfg}")
 
     authorization_endpoint = google_provider_cfg["authorization_endpoint"]
 
-    # Use library to construct the request for Google api_login and provide
+    # Use library to construct the request for Google login and provide
     # scopes that let you retrieve user's profile from Google
     print(f"base url {request.base_url}")
     final_redirect_url = str(request.base_url)
-    # final_redirect_url = final_redirect_url.replace("http://", "https://", 1)
     print("redirect uri: %s" % final_redirect_url)
     request_uri = google_client.prepare_request_uri(
         authorization_endpoint,
@@ -63,7 +62,7 @@ async def google_callback(
 ):
     # Get authorization code Google sent back to you
     code = google_callback_request.code
-    print("code: %s" % code)
+    print(f"code: {code}")
 
     # Find out what URL to hit to get tokens that allow you to ask for
     # things on behalf of a user
@@ -74,8 +73,6 @@ async def google_callback(
     # Not sure why it reverts to regular http:// but change it back to secure connection
     final_redirect_url = str(request.base_url)
     authorization_response = str(request.url)
-    # final_redirect_url = final_redirect_url.replace("http://", "https://", 1)
-    # authorization_response = authorization_response.replace("http://", "https://", 1)
     print(f"final_redirect_url: {str(final_redirect_url)}")
     print(f"authorization_response: {str(authorization_response)}")
 
@@ -148,19 +145,12 @@ async def google_callback(
         # Send user to the world
         request_base_url = str(request.base_url)
         print(f"request_base_url: {str(request_base_url)}")
-        world_url = request_base_url.replace("/api_login/google/callback", "/birdaccess")
+        world_url = request_base_url.replace("/login/google/callback", "/birdaccess")
         world_url_params = world_url + "?" + url_params
         print(f"redirected to the url: {world_url_params}")
         return RedirectResponse(world_url_params)
     else:
         print("user creation failed")
         request_base_url = str(request.base_url)
-        login_url = request_base_url.replace("/api_login/google/callback", "/")
+        login_url = request_base_url.replace("/login/google/callback", "/")
         return RedirectResponse(login_url)
-
-
-@api_router_login.post("/test/call_2", status_code=200)
-async def test_call_2() -> dict:
-    return {
-        "result": True,
-    }
