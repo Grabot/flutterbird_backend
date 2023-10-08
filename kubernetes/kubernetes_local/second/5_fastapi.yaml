@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fastapi-deployment
-  namespace: golden-age
+  namespace: sky
   labels:
     app: fastapi
 spec:
@@ -12,7 +12,7 @@ spec:
       app: fastapi
   template:
     metadata:
-      namespace: golden-age
+      namespace: sky
       labels:
         app: fastapi
     spec:
@@ -100,7 +100,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: golden-age
+  namespace: sky
   name: fastapi-service
 spec:
   ports:

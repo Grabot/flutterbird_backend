@@ -35,25 +35,21 @@ async def register_user(
     if email is None or password is None or user_name is None:
         return get_failed_response("Invalid request", response)
 
-    print("all fields present, starting first query")
     # Not loading the friends and followers here. Just checking if the username is taken.
     statement = select(User).where(func.lower(User.username) == user_name.lower())
     results = await db.execute(statement)
     result = results.first()
 
-    print(f"results: {result}")
     if result is not None:
         return get_failed_response(
             "User is already taken, please choose a different one.", response
         )
 
-    print("starting second statement")
     # Also not loading the friends and followers here, just checking if the email is taken.
     statement = select(User).where(User.origin == 0).where(func.lower(User.email) == email.lower())
     results = await db.execute(statement)
     result = results.first()
 
-    print(f"results: {result}")
     if result is not None:
         return get_failed_response(
             "This email has already been used to create an account", response
@@ -69,8 +65,7 @@ async def register_user(
     db.add(user_token)
     await db.commit()
 
-    task = task_generate_avatar.delay(user.avatar_filename(), user.id)
-    print(f"running avatar generation! {task}")
+    _ = task_generate_avatar.delay(user.avatar_filename(), user.id)
 
     # Return the user with no friend information because they have none yet.
     # And no avatar, because it might still be generating.

@@ -24,7 +24,6 @@ async def get_user(
     response: Response,
     db: AsyncSession = Depends(get_db),
 ) -> dict:
-    print("getting user")
     auth_token = get_auth_token(request.headers.get("Authorization"))
 
     if auth_token == "":

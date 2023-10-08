@@ -13,14 +13,12 @@ engine_sync = create_engine(settings.SYNC_DB_URL, pool_pre_ping=True, pool_size=
 
 
 def remove_expired_tokens():
-    print("removing expired tokens")
     with Session(engine_sync) as session:
         delete_expired_tokens = delete(UserToken).where(
             UserToken.refresh_token_expiration < int(time.time())
         )
         session.execute(delete_expired_tokens)
         session.commit()
-        print("expired tokens removed")
 
 
 # We create a separate cron worker for this because if we add the scheduler in the fastapi app,

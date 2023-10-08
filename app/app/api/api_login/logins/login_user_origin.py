@@ -23,7 +23,6 @@ async def login_user_origin(
     ):
         users_name = users_name.replace("@", "")
 
-    print("logging in user from origin that is not regular")
     # Check if the user has logged in before using this origin.
     # If that's the case it has a Row in the User database, and we log in
     statement_origin = (
@@ -35,11 +34,6 @@ async def login_user_origin(
     result_user_origin = results_origin.first()
 
     if not result_user_origin:
-        return None
-
-    origin_user: User = result_user_origin.User
-    if origin_user is None:
-        print("new user")
         # If not than we create a new entry in the User table and then log in.
         # The last verification is to check if username is not taken
         statement_name = select(User).where(func.lower(User.username) == users_name.lower())
@@ -47,25 +41,19 @@ async def login_user_origin(
         result_user_name = results_name.first()
 
         if not result_user_name:
-            return None
-
-        name_user: User = result_user_name.User
-
-        if name_user is None:
-            print("really new user!")
-            user = User(username=users_name, email=users_email, password_hash="", origin=origin)
+            user = User(
+                username=users_name, email=users_email, password_hash="", salt="", origin=origin
+            )
             db.add(user)
             await db.commit()
             return user
         else:
-            print("username is taken....")
             # If the username is taken than we change it because we have to create the user here.
             # The user can change it later if that person really hates it.
             # We just assume that it eventually always manages to create a user.
             index = 2
             while index < 1000:
                 new_user_name = users_name + "_%s" % index
-                print("attempting user creation with username: %s" % new_user_name)
                 statement_name_new = select(User).where(
                     func.lower(User.username) == new_user_name.lower()
                 )
@@ -73,25 +61,19 @@ async def login_user_origin(
                 result_user_name_name = results_name_new.first()
 
                 if not result_user_name_name:
-                    return None
-
-                new_user: User = result_user_name_name.User
-
-                if new_user is None:
-                    print("we finally have a correct username!")
                     user = User(
                         username=new_user_name,
                         email=users_email,
                         password_hash="",
+                        salt="",
                         origin=origin,
                     )
                     db.add(user)
                     await db.commit()
                     return user
                 else:
-                    print("still taken...")
                     index += 1
             return None
     else:
-        print("logging in existing user")
+        origin_user: User = result_user_origin.User
         return origin_user
