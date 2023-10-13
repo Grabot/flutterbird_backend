@@ -33,3 +33,4 @@ per-file-ignores =
     ./app/app/api/api_login/logins/__init__.py:F401
     ./app/app/api/api_v1/flutterbird/__init__.py:F401
     ./app/app/api/api_v1/test/__init__.py:F401
+    ./app/app/api/api_v1/leaderboard/__init__.py:F401
