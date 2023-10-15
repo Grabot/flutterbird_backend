@@ -7,11 +7,11 @@ from sqlmodel import select
 
 from app.api.api_v1 import api_router_v1
 from app.database import get_db
-from app.models.leaderboard_one_player import LeaderboardOnePlayer
+from app.models.leaderboard_two_player import LeaderboardTwoPlayer
 
 
-@api_router_v1.get("/get/leaderboard/one_player", status_code=200)
-async def get_leaderboard_one_player(request: Request, db: AsyncSession = Depends(get_db)):
+@api_router_v1.get("/get/leaderboard/two_players", status_code=200)
+async def get_leaderboard_two_players(request: Request, db: AsyncSession = Depends(get_db)):
     current_time = datetime.utcnow()
     day_ago = current_time - timedelta(days=1)
     week_ago = current_time - timedelta(days=7)
@@ -21,27 +21,27 @@ async def get_leaderboard_one_player(request: Request, db: AsyncSession = Depend
     leaderboard_size = 20
     # We combine all the results together. On the frontend we will sort them by timestamp
     statement = (
-        select(LeaderboardOnePlayer)
-        .filter(LeaderboardOnePlayer.timestamp > day_ago)
-        .order_by(desc(LeaderboardOnePlayer.score))
+        select(LeaderboardTwoPlayer)
+        .filter(LeaderboardTwoPlayer.timestamp > day_ago)
+        .order_by(desc(LeaderboardTwoPlayer.score))
         .limit(leaderboard_size)
         .union(
-            select(LeaderboardOnePlayer)
-            .filter(LeaderboardOnePlayer.timestamp > week_ago)
-            .order_by(desc(LeaderboardOnePlayer.score))
+            select(LeaderboardTwoPlayer)
+            .filter(LeaderboardTwoPlayer.timestamp > week_ago)
+            .order_by(desc(LeaderboardTwoPlayer.score))
             .limit(leaderboard_size)
             .union(
-                select(LeaderboardOnePlayer)
-                .filter(LeaderboardOnePlayer.timestamp > month_ago)
-                .order_by(desc(LeaderboardOnePlayer.score))
+                select(LeaderboardTwoPlayer)
+                .filter(LeaderboardTwoPlayer.timestamp > month_ago)
+                .order_by(desc(LeaderboardTwoPlayer.score))
                 .limit(leaderboard_size)
                 .union(
-                    select(LeaderboardOnePlayer)
-                    .filter(LeaderboardOnePlayer.timestamp > year_ago)
-                    .order_by(desc(LeaderboardOnePlayer.score))
+                    select(LeaderboardTwoPlayer)
+                    .filter(LeaderboardTwoPlayer.timestamp > year_ago)
+                    .order_by(desc(LeaderboardTwoPlayer.score))
                     .limit(leaderboard_size)
-                    .union(select(LeaderboardOnePlayer))
-                    .order_by(desc(LeaderboardOnePlayer.score))
+                    .union(select(LeaderboardTwoPlayer))
+                    .order_by(desc(LeaderboardTwoPlayer.score))
                     .limit(leaderboard_size)
                 )
             )
@@ -53,7 +53,7 @@ async def get_leaderboard_one_player(request: Request, db: AsyncSession = Depend
 
     leaders = []
     for lead in all_leaders:
-        leader = LeaderboardOnePlayer(**dict(lead))
+        leader = LeaderboardTwoPlayer(**dict(lead))
         leaders.append(leader.serialize)
 
     return {"result": True, "leaders": leaders}

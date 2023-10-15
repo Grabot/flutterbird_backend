@@ -8,19 +8,19 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.api_v1 import api_router_v1
 from app.database import get_db
 from app.models import User
-from app.models.leaderboard_one_player import LeaderboardOnePlayer
+from app.models.leaderboard_two_player import LeaderboardTwoPlayer
 from app.sockets.sockets import sio
 from app.util.rest_util import get_failed_response
 from app.util.util import check_token, get_auth_token
 
 
-class UpdateLeaderboardAllOnePlayerRequest(BaseModel):
+class UpdateLeaderboardTwoPlayerRequest(BaseModel):
     score: int
 
 
-@api_router_v1.post("/update/leaderboard/one_player", status_code=200)
-async def update_leaderboard_one_player(
-    update_leaderboard_all_one_player_request: UpdateLeaderboardAllOnePlayerRequest,
+@api_router_v1.post("/update/leaderboard/two_players", status_code=200)
+async def update_leaderboard_two_players(
+    update_leaderboard_two_player_request: UpdateLeaderboardTwoPlayerRequest,
     request: Request,
     response: Response,
     db: AsyncSession = Depends(get_db),
@@ -33,11 +33,11 @@ async def update_leaderboard_one_player(
     if not user_update:
         return get_failed_response("an error occurred", response)
 
-    score = update_leaderboard_all_one_player_request.score
+    score = update_leaderboard_two_player_request.score
 
     now = datetime.utcnow()
 
-    new_leaderboard_update = LeaderboardOnePlayer(
+    new_leaderboard_update = LeaderboardTwoPlayer(
         score=score, user_name=user_update.username, user_id=user_update.id, timestamp=now
     )
     db.add(new_leaderboard_update)
@@ -48,7 +48,7 @@ async def update_leaderboard_one_player(
         "user_name": user_update.username,
         "user_id": user_update.id,
         "timestamp": now.strftime("%Y-%m-%dT%H:%M:%S.%f"),
-        "one_player": True,
+        "one_player": False,
     }
 
     await sio.emit("update_leaderboard", socket_response)
