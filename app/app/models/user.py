@@ -1,4 +1,5 @@
 import base64
+import json
 import os
 import secrets
 import time
@@ -33,6 +34,7 @@ class User(SQLModel, table=True):
     total_flutters: int = Field(default=0)
     total_pipes_cleared: int = Field(default=0)
     total_games: int = Field(default=0)
+    achievements: str = Field(default="{}")
 
     tokens: List["UserToken"] = Relationship(back_populates="user")
 
@@ -162,6 +164,7 @@ class User(SQLModel, table=True):
                 "total_games": self.total_games,
                 "best_score": self.best_score,
             },
+            "achievements": json.loads(self.achievements),
         }
 
     @property
@@ -177,6 +180,7 @@ class User(SQLModel, table=True):
                 "total_games": self.total_games,
                 "best_score": self.best_score,
             },
+            "achievements": json.loads(self.achievements),
         }
 
     @property
@@ -200,4 +204,5 @@ class User(SQLModel, table=True):
                 "total_games": 0,
                 "best_score": 0,
             },
+            "achievements": {},
         }
