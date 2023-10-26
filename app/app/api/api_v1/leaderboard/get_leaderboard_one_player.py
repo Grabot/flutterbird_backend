@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from fastapi import Depends, Request
-from sqlalchemy import desc
+from sqlalchemy import asc, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
@@ -18,36 +18,43 @@ async def get_leaderboard_one_player(request: Request, db: AsyncSession = Depend
     month_ago = current_time - timedelta(days=31)
     year_ago = current_time - timedelta(days=365)
 
-    leaderboard_size = 20
+    leaderboard_size = 10
     # We combine all the results together. On the frontend we will sort them by timestamp
     statement = (
         select(LeaderboardOnePlayer)
-        .filter(LeaderboardOnePlayer.timestamp > day_ago)
-        .order_by(desc(LeaderboardOnePlayer.score))
+        .order_by(desc(LeaderboardOnePlayer.score), asc(LeaderboardOnePlayer.timestamp))
         .limit(leaderboard_size)
-        .union(
+    ).union(
+        (
             select(LeaderboardOnePlayer)
-            .filter(LeaderboardOnePlayer.timestamp > week_ago)
-            .order_by(desc(LeaderboardOnePlayer.score))
+            .filter(LeaderboardOnePlayer.timestamp > year_ago)
+            .order_by(desc(LeaderboardOnePlayer.score), asc(LeaderboardOnePlayer.timestamp))
             .limit(leaderboard_size)
-            .union(
+        ).union(
+            (
                 select(LeaderboardOnePlayer)
                 .filter(LeaderboardOnePlayer.timestamp > month_ago)
-                .order_by(desc(LeaderboardOnePlayer.score))
+                .order_by(desc(LeaderboardOnePlayer.score), asc(LeaderboardOnePlayer.timestamp))
                 .limit(leaderboard_size)
-                .union(
+            ).union(
+                (
                     select(LeaderboardOnePlayer)
-                    .filter(LeaderboardOnePlayer.timestamp > year_ago)
-                    .order_by(desc(LeaderboardOnePlayer.score))
+                    .filter(LeaderboardOnePlayer.timestamp > week_ago)
+                    .order_by(desc(LeaderboardOnePlayer.score), asc(LeaderboardOnePlayer.timestamp))
                     .limit(leaderboard_size)
-                    .union(select(LeaderboardOnePlayer))
-                    .order_by(desc(LeaderboardOnePlayer.score))
-                    .limit(leaderboard_size)
+                ).union(
+                    (
+                        select(LeaderboardOnePlayer)
+                        .filter(LeaderboardOnePlayer.timestamp > day_ago)
+                        .order_by(
+                            desc(LeaderboardOnePlayer.score), asc(LeaderboardOnePlayer.timestamp)
+                        )
+                        .limit(leaderboard_size)
+                    )
                 )
             )
         )
     )
-
     leaderboard_statement = await db.execute(statement)
     all_leaders = leaderboard_statement.all()
 
