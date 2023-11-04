@@ -12,7 +12,8 @@ from app.util.util import check_token, get_auth_token
 
 
 class ScoreUpdateRequest(BaseModel):
-    best_score: int
+    best_score_single_bird: Optional[int]
+    best_score_double_bird: Optional[int]
     total_flutters: int
     total_pipes_cleared: int
     total_games: int
@@ -34,13 +35,19 @@ async def update_score(
     if not user:
         return get_failed_response("An error occurred", response)
 
-    best_score = score_update_request.best_score
+    best_score_single_bird = score_update_request.best_score_single_bird
+    best_score_double_bird = score_update_request.best_score_double_bird
     total_flutters = score_update_request.total_flutters
     total_pipes_cleared = score_update_request.total_pipes_cleared
     total_games = score_update_request.total_games
     # A final check to make sure the score only goes up
-    if best_score > user.best_score:
-        user.best_score = best_score
+
+    if best_score_single_bird:
+        if best_score_single_bird > user.best_score_single_bird:
+            user.best_score_single_bird = best_score_single_bird
+    if best_score_double_bird:
+        if best_score_double_bird > user.best_score_double_bird:
+            user.best_score_double_bird = best_score_double_bird
     if total_flutters > user.total_flutters:
         user.total_flutters = total_flutters
     if total_pipes_cleared > user.total_pipes_cleared:

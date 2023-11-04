@@ -30,7 +30,8 @@ class User(SQLModel, table=True):
     origin: int
     email_verified: bool = Field(default=False)
     default_avatar: bool = Field(default=True)
-    best_score: int = Field(default=0)
+    best_score_single_bird: int = Field(default=0)
+    best_score_double_bird: int = Field(default=0)
     total_flutters: int = Field(default=0)
     total_pipes_cleared: int = Field(default=0)
     total_games: int = Field(default=0)
@@ -162,7 +163,8 @@ class User(SQLModel, table=True):
                 "total_flutters": self.total_flutters,
                 "total_pipes_cleared": self.total_pipes_cleared,
                 "total_games": self.total_games,
-                "best_score": self.best_score,
+                "best_score_single_bird": self.best_score_single_bird,
+                "best_score_double_bird": self.best_score_double_bird,
             },
             "achievements": json.loads(self.achievements),
         }
@@ -178,7 +180,8 @@ class User(SQLModel, table=True):
                 "total_flutters": self.total_flutters,
                 "total_pipes_cleared": self.total_pipes_cleared,
                 "total_games": self.total_games,
-                "best_score": self.best_score,
+                "best_score_single_bird": self.best_score_single_bird,
+                "best_score_double_bird": self.best_score_double_bird,
             },
             "achievements": json.loads(self.achievements),
         }
@@ -202,7 +205,8 @@ class User(SQLModel, table=True):
                 "total_flutters": 0,
                 "total_pipes_cleared": 0,
                 "total_games": 0,
-                "best_score": 0,
+                "best_score_single_bird": 0,
+                "best_score_double_bird": 0,
             },
             "achievements": {},
         }
