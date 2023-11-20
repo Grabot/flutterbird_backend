@@ -20,6 +20,7 @@ class RegisterRequest(BaseModel):
     email: Optional[str] = None
     user_name: Optional[str] = None
     password: str
+    is_web: bool
 
 
 @api_router_v1.post("/register", status_code=200)
@@ -31,6 +32,7 @@ async def register_user(
     email = register_request.email
     user_name = register_request.user_name
     password = register_request.password
+    is_web = register_request.is_web
 
     if email is None or password is None or user_name is None:
         return get_failed_response("Invalid request", response)
@@ -54,8 +56,11 @@ async def register_user(
         return get_failed_response(
             "This email has already been used to create an account", response
         )
-
-    user = User(username=user_name, email=email, origin=0)
+    if is_web:
+        platform = 1
+    else:
+        platform = 2
+    user = User(username=user_name, email=email, origin=0, platform=platform)
     user.hash_password(password)
     db.add(user)
     # Refresh user so we can get the id.

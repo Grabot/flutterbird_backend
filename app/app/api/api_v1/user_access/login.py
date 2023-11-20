@@ -19,6 +19,7 @@ class LoginRequest(BaseModel):
     email: Optional[str] = None
     user_name: Optional[str] = None
     password: str
+    is_web: bool
 
 
 @api_router_v1.post("/login", status_code=200)
@@ -30,6 +31,7 @@ async def login_user(
     email = login_request.email
     user_name = login_request.user_name
     password = login_request.password
+    is_web = login_request.is_web
     if password is None or (email is None and user_name is None):
         return get_failed_response("Invalid request", response)
     if user_name is None:
@@ -63,6 +65,22 @@ async def login_user(
     if not user.verify_password(password):
         return get_failed_response("password not correct", response)
 
+    # If the platform is 3 we don't need to check anything anymore.
+    platform_achievement = False
+    print(f"platform: {user.platform}")
+    if user.platform != 3:
+        if is_web:
+            platform_value = user.logged_in_web()
+            if platform_value > 0:
+                db.add(user)
+            if platform_value == 2:
+                platform_achievement = True
+        elif not is_web:
+            platform_value = user.logged_in_mobile()
+            if platform_value > 0:
+                db.add(user)
+            if platform_value == 2:
+                platform_achievement = True
     # Valid login, we refresh the token for this user.
     user_token = get_user_tokens(user)
     db.add(user_token)
@@ -76,5 +94,8 @@ async def login_user(
         "refresh_token": user_token.refresh_token,
         "user": return_user,
     }
+    print(f"platform_achievement: {platform_achievement}")
+    if platform_achievement:
+        login_response["platform_achievement"] = True
 
     return login_response

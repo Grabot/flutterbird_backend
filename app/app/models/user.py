@@ -36,6 +36,7 @@ class User(SQLModel, table=True):
     total_pipes_cleared: int = Field(default=0)
     total_games: int = Field(default=0)
     achievements: str = Field(default="{}")
+    platform: int = Field(default=0)  # 0 = undefined, 1 = web, 2 = IOS/Android, 3 = Both
 
     tokens: List["UserToken"] = Relationship(back_populates="user")
 
@@ -93,6 +94,30 @@ class User(SQLModel, table=True):
             "iat": int(time.time()),  # issued at
         }
         return jwt.encode(settings.header, payload, settings.jwk)
+
+    def logged_in_web(self):
+        # If the user has played on mobile this variable will be 2.
+        # Now the user is on web, so we set it to 3. Which is the final state.
+        if self.platform == 2:
+            self.platform = 3
+            return 2
+        # If the value is undefined we set the variable to 1, which is web.
+        elif self.platform == 0:
+            self.platform = 1
+            return 1
+        return 0
+
+    def logged_in_mobile(self):
+        # If the user has played on web this variable will be 1.
+        # Now the user is on mobile, so we set it to 3. Which is the final state.
+        if self.platform == 1:
+            self.platform = 3
+            return 2
+        # If the value is undefined we set the variable to 2, which is mobile.
+        elif self.platform == 0:
+            self.platform = 2
+            return 1
+        return 0
 
     def generate_refresh_token(self, expires_in=345600):
         payload = {
